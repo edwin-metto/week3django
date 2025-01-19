@@ -1,0 +1,39 @@
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="feed container mx-auto p-4 bg-gray-100">
+    <!-- Loop through posts -->
+    {% for post in posts %}
+    <div class="post bg-white shadow-md rounded-md p-4 mb-4">
+        <!-- Post Header -->
+        <h4 class="text-lg font-bold text-gray-800">{{ post.user.username }}</h4>
+        <p class="text-gray-600 mb-2">{{ post.content }}</p>
+        
+        <!-- Post Image -->
+        {% if post.image %}
+        <img src="{{ post.image.url }}" alt="Post Image" class="w-full rounded-md mb-2">
+        {% endif %}
+        
+        <!-- Post Actions -->
+        <div class="post-actions flex items-center space-x-4 mt-2">
+            <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                Like ({{ post.likes.count }})
+            </button>
+            <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+                Comment ({{ post.comments.count }})
+            </button>
+
+            {% if post.user == request.user %}
+            <form action="{% url 'delete_post' post.id %}" method="POST" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                    Delete
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <!-- No Posts Message -->
+    <p class="text-gray-500 text-center mt-4">create post</p>
+    {% endfor %}
+</div>
